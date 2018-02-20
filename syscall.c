@@ -103,6 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_listproc(void);
+extern int sys_dumplog(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -126,6 +128,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_listproc] sys_listproc,
+[SYS_dumplog]  sys_dumplog,
 };
 
 void
@@ -143,3 +147,4 @@ syscall(void)
     curproc->tf->eax = -1;
   }
 }
+

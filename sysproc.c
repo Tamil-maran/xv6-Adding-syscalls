@@ -89,3 +89,17 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int 
+sys_listproc(void)
+{
+  listproc();
+  return 0;
+}
+
+int
+sys_dumplog(void)
+{
+  dumplog();
+  return 0;
+}

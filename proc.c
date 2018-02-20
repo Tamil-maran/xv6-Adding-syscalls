@@ -12,6 +12,16 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+struct logp {
+  char name[16];
+  uint pid;
+  int uptime;
+  uint dead;
+};
+
+struct logp proclog[10];
+int procno=-1;
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -19,6 +29,7 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+
 
 void
 pinit(void)
@@ -64,6 +75,36 @@ myproc(void) {
   popcli();
   return p;
 }
+
+void addlogp(struct proc *p)
+{
+  if(procno>8)
+  {
+    for(int i=0; i<9; i++)
+      proclog[i]=proclog[i+1];
+    procno--;
+  }
+  procno++;
+  proclog[procno].pid=p->pid;
+  strncpy(proclog[procno].name,p->name,16);
+  proclog[procno].uptime=sys_uptime();
+  proclog[procno].dead=0;
+  
+}
+
+void updlogp(uint p)
+{
+  cprintf("Updateing for %d\n",p);
+  for(int i=0; i<=procno; i++)
+  {
+    if(proclog[i].pid==p && proclog[i].dead==0);
+      {
+        proclog[i].uptime=sys_uptime()-proclog[i].uptime;
+        proclog[i].dead=1;
+      }
+  }
+}
+
 
 //PAGEBREAK: 32
 // Look in the process table for an UNUSED proc.
@@ -111,7 +152,6 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
-
   return p;
 }
 
@@ -217,7 +257,6 @@ fork(void)
   np->state = RUNNABLE;
 
   release(&ptable.lock);
-
   return pid;
 }
 
@@ -230,25 +269,22 @@ exit(void)
   struct proc *curproc = myproc();
   struct proc *p;
   int fd;
-
   if(curproc == initproc)
     panic("init exiting");
-
   // Close all open files.
+  updlogp(curproc->pid);
   for(fd = 0; fd < NOFILE; fd++){
     if(curproc->ofile[fd]){
       fileclose(curproc->ofile[fd]);
       curproc->ofile[fd] = 0;
     }
   }
-
   begin_op();
   iput(curproc->cwd);
   end_op();
   curproc->cwd = 0;
 
   acquire(&ptable.lock);
-
   // Parent might be sleeping in wait().
   wakeup1(curproc->parent);
 
@@ -335,6 +371,7 @@ scheduler(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
+
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -492,6 +529,7 @@ kill(int pid)
       return 0;
     }
   }
+  
   release(&ptable.lock);
   return -1;
 }
@@ -530,5 +568,94 @@ procdump(void)
         cprintf(" %p", pc[i]);
     }
     cprintf("\n");
+  }
+}
+
+void padd(int len, int k)
+{
+  while(k++<len)
+    cprintf(" ");
+}
+
+int intlen(int i)
+{
+  int k=0;
+  while(i)
+  {
+    k++;
+    i=i/10;
+  }
+
+  return k;
+}
+
+void
+listproc(void)
+{
+  static char *states[] = {
+  [UNUSED]    "UNUSED",
+  [EMBRYO]    "EMBRYO",
+  [SLEEPING]  "SLEEP",
+  [RUNNABLE]  "RUNNABLE",
+  [RUNNING]   "RUNNING",
+  [ZOMBIE]    "ZOMBIE"
+  }; 
+
+  struct proc *p;
+  acquire(&ptable.lock);
+  cprintf(" Pid           Name          Size          State\n\n");
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+        if(p->state!=UNUSED)
+        {
+
+            cprintf(" %d",p->pid);
+            padd(14,intlen(p->pid));
+
+            cprintf("%s",p->name);
+            padd(14,strlen(p->name));
+
+            cprintf("%d",p->sz);
+            padd(14,intlen(p->sz));
+
+            cprintf("%s",states[p->state]);
+            cprintf("\n");
+        }
+
+  release(&ptable.lock);
+}
+
+
+void 
+dumplog(void)
+{
+  if(procno<0)
+  {
+    cprintf("Log Empty");
+    return;
+  }
+
+
+  cprintf(" Pid           Name          Time Ran\n\n");
+  for(int i=0; i<=procno; i++ )
+  {
+    struct logp p=proclog[i];
+    cprintf(" %d",p.pid);
+    padd(14,intlen(p.pid));
+
+    cprintf("%s",p.name);
+    padd(14,strlen(p.name));
+
+    if(p.dead)
+     { 
+        cprintf("%d",p.uptime);
+        padd(14,intlen(p.uptime));
+     }
+     else
+     {
+        cprintf("Running");
+        padd(14,strlen("Running"));
+     }
+
+     cprintf("\n");
   }
 }
