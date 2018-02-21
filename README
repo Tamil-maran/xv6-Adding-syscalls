@@ -1,8 +1,8 @@
 Syscalls added
 
-listproc
+1. listproc
     - Prints the details of currently runnning processes by probing the process table
-dumplog 
+2. dumplog 
     - Prints the log of processes created and their lifetime if they have exited or have been killed.
-trace
+3. trace
     - Turns on the syscall trace for a process which outputs details of syscalls called and the total number of syscalls after enabling trace. 
