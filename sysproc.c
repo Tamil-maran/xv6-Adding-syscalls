@@ -118,3 +118,24 @@ sys_shutdown(void)
 
   return 0;
 }
+
+int
+sys_trace(void)
+{
+  int n;
+  struct proc *p = myproc();
+  argint(0, &n);
+  if(n)
+    {
+      cprintf("Trace turned on for %s(pid: %d) \n",p->name,p->pid);
+      p->trace=1;
+      p->totalcalls=0;
+    }
+    else
+    {
+      cprintf("Trace turned off for %s(pid: %d) \n",p->name,p->pid);
+      p->trace=0;
+      p->totalcalls=0;
+    }
+  return 0;
+}
