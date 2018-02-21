@@ -5,5 +5,4 @@ listproc
 dumplog 
     - Prints the log of processes created and their lifetime if they have exited or have been killed.
 trace
-    - Turns on the syscall trace for a process which outputs details of syscalls called and the total number of syscalls
-      after enabling trace. 
+    - Turns on the syscall trace for a process which outputs details of syscalls called and the total number of syscalls after enabling trace. 
