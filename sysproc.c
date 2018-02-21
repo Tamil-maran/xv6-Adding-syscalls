@@ -103,3 +103,18 @@ sys_dumplog(void)
   dumplog();
   return 0;
 }
+
+int
+sys_shutdown(void)
+{
+  cprintf("Shutting down\n");
+    const char s[] = "Shutdown";
+  const char *p;
+
+  outw( 0xB004, 0x0 | 0x2000 );
+
+  for (p = s; *p != '\0'; p++)
+    outb (0x8900, *p);
+
+  return 0;
+}
