@@ -160,7 +160,6 @@ int             fetchint(uint, int*);
 int             fetchstr(uint, char**);
 int             sys_uptime();
 void            syscall(void);
-int             shutdown(void);
 
 // timer.c
 void            timerinit(void);

@@ -94,10 +94,11 @@ void addlogp(struct proc *p)
 
 void updlogp(uint p)
 {
+  cprintf("Updateing for %d\n",p);
   for(int i=0; i<=procno; i++)
   {
-    if(proclog[i].pid==p && proclog[i].dead==0)
-      { 
+    if(proclog[i].pid==p && proclog[i].dead==0);
+      {
         proclog[i].uptime=sys_uptime()-proclog[i].uptime;
         proclog[i].dead=1;
       }
@@ -516,8 +517,6 @@ int
 kill(int pid)
 {
   struct proc *p;
-  cprintf("%d killed\n",pid);
-  updlogp(pid);
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){

@@ -25,8 +25,6 @@ int sleep(int);
 int uptime(void);
 void listproc(void);
 void dumplog(void);
-void shutdown(void);
-void trace(int);
 
 // ulib.c
 int stat(char*, struct stat*);

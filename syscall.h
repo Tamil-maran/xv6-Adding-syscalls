@@ -22,5 +22,3 @@
 #define SYS_close  21
 #define SYS_listproc 22
 #define SYS_dumplog 23
-#define SYS_shutdown 24
-#define SYS_trace    25
