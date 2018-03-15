@@ -39,3 +39,4 @@ SYSCALL(extend_as);
 SYSCALL(dup2);
 SYSCALL(yield);
 SYSCALL(alarm);
+SYSCALL(printproc);

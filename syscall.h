@@ -30,3 +30,4 @@
 #define SYS_dup2 29
 #define SYS_yield 30
 #define SYS_alarm 31
+#define SYS_printproc 32

@@ -124,6 +124,7 @@ void            listproc(void);
 void            addlogp(struct proc*);
 void            updlogp(uint);
 void            dumplog(void);
+struct proc*    getproc(int pid);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

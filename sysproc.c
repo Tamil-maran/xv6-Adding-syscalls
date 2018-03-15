@@ -193,3 +193,31 @@ sys_alarm(void)
   p->handler = handler;
   return 0;
 }
+
+int
+sys_printproc(void)
+{
+  int pid,count=0,i;
+  if(argint(0, &pid) < 0)
+    return -1;
+  char* st[] = { "UNUSED", "EMBRYO", "SLEEPING", "RUNNABLE", "RUNNING", "ZOMBIE" };
+  struct proc* p = getproc(pid);
+  cprintf("Name : %s | PID : %d\n",p->name,p->pid);
+  cprintf("Size : %d\n",p->sz);
+  cprintf("Page directory location : %p\n",(uint*)p->pgdir);
+  cprintf("Parent : %s | PID : %d\n",p->parent->name,p->parent->pid);
+  cprintf("State : %s\n",st[p->state]);
+  cprintf("Context\n");
+  cprintf("   edi : %p\n",p->context->edi);
+  cprintf("   esi : %p\n",p->context->esi);
+  cprintf("   ebx : %p\n",p->context->ebx);
+  cprintf("   ebp : %p\n",p->context->ebp);
+  cprintf("   eip : %p\n",p->context->eip);
+  for(i=0; i<NOFILE; i++)
+  if(p->ofile[i]!=0)
+    count++;
+  cprintf("Number of files open : %d\n",count);
+  cprintf("Launch time : %d:%d:%d \n",p->start->hour,p->start->minute,p->start->second);
+  cprintf("Trace : %d\n",p->trace);
+  return 0;
+}

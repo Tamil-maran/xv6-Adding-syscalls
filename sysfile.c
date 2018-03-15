@@ -471,3 +471,28 @@ sys_pipe(void)
   return 0;
 }
 
+// int
+// sys_gfile(void)
+// {
+//   int pid;
+//   int fd,pfd;
+//   struct file* f;
+//   if(argint(0,&pid)<0)
+//     return -1;
+//   if(argfd(1,&fd,&f)<0)
+//     return -1;
+//   if(argint(2,&pfd)<0)
+//     return -1;
+//   struct proc* p = getproc(pid);
+//   if( p == 0)
+//     return -1;
+
+//   if(p->ofile[pfd] == 0){
+//      p->ofile[pfd] = f;
+//      f->ref++;
+//      return 0;
+//    }
+ 
+//     return -1;
+// }
+

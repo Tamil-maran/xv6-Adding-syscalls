@@ -33,6 +33,8 @@ void extend_as(int);
 int dup2(int,int);
 int yield(void);
 int alarm(uint, void (*handler)());
+int gfile(int,int,int);
+int printproc(int);
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -114,6 +114,7 @@ extern int sys_extend_as(void);
 extern int sys_dup2(void);
 extern int sys_yield(void);
 extern int sys_alarm(void);
+extern int sys_printproc(void);
 
 
 static int (*syscalls[])(void) = {
@@ -148,6 +149,7 @@ static int (*syscalls[])(void) = {
 [SYS_dup2]      sys_dup2,
 [SYS_yield]     sys_yield,
 [SYS_alarm]     sys_alarm,
+[SYS_printproc] sys_printproc,
 };
 
 char* names[]={
@@ -182,6 +184,7 @@ char* names[]={
 [SYS_dup2]     "dup2",
 [SYS_yield]    "yield",
 [SYS_alarm]     "alarm",
+[SYS_printproc] "printproc",
 };
 
 void
