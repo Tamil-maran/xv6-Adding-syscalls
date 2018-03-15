@@ -19,3 +19,12 @@ uSyscalls implemented
 
 6. extend_as(int)
 - Extends the virtual adresspace to the given new size if new size is greater than old size.
+
+7. dup2(int, int)
+- Creates an alias file descriptor for a file that is open.
+
+8. yield(void)
+- Calling process gives up the CPU.
+
+9. alarm(int, void (*handler)())
+- Executes a handler function in the process periodically depending on the argument provided.
