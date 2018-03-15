@@ -1,3 +1,4 @@
+#include "defs.h"
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -49,6 +50,12 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  uint trace;                  // If non-zero, syscalls are displayed in console
+  uint totalcalls;
+  struct rtcdate* start;
+  int tot_ticks;
+  int rem_ticks;
+  void (*handler)();
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -56,3 +63,4 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+

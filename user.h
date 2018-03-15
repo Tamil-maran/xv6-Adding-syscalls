@@ -25,6 +25,14 @@ int sleep(int);
 int uptime(void);
 void listproc(void);
 void dumplog(void);
+void shutdown(void);
+void trace(int);
+void datetime(struct rtcdate*);
+void ppoint(int*);
+void extend_as(int);
+int dup2(int,int);
+int yield(void);
+int alarm(uint, void (*handler)());
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -103,3 +103,93 @@ sys_dumplog(void)
   dumplog();
   return 0;
 }
+
+int 
+sys_shutdown(void)
+{
+  cprintf("calling sys_halt\n");
+  char *p = "Shutdown";
+  for( ; *p; p++)
+    outb(0x8900, *p);
+  return 0;
+}
+
+int
+sys_trace(void)
+{
+  int n;
+  struct proc *p = myproc();
+  argint(0, &n);
+  if(n)
+    {
+      cprintf("\nTrace turned on for %s(pid: %d) \n",p->name,p->pid);
+      p->trace=1;
+      p->totalcalls=0;
+    }
+    else
+    {
+      cprintf("\nTrace turned off for %s(pid: %d) \n",p->name,p->pid);
+      p->trace=0;
+      p->totalcalls=0;
+    }
+  return 0;
+}
+
+int
+sys_datetime(void)
+{
+  char *c;
+  argptr(0,&c,sizeof(struct rtcdate));
+  cmostime((struct rtcdate*)c);
+
+  return 0;
+}
+
+int
+sys_ppoint(void)
+{
+  char* c;
+  argptr(0,&c,sizeof(int*));
+  cprintf("Virtual address %p\n",c);
+  c = (char*)walkpgdir(myproc()->pgdir, (void*)c, 0);
+  cprintf("Physical address %p\n",c);
+  return 0;
+}
+
+int
+sys_extend_as(void)
+{
+  int newsz;
+  argint(0,&newsz);
+  int n = growproc(newsz);
+  if(n==-1)
+    cprintf("Allocation failed\n");
+  else if(n==0)
+    cprintf("Old size : %d\nNew size %d\n",myproc()->sz,myproc()->sz+newsz);
+  return 0;
+}
+
+
+int 
+sys_yield(void)
+{
+  yield();
+  return 0;
+}
+
+int
+sys_alarm(void)
+{
+  int ticks;
+  void (*handler)();
+
+  if(argint(0, &ticks) < 0)
+    return -1;
+  if(argptr(1, (char**)&handler, 1) < 0)
+    return -1;
+  struct proc* p = myproc();
+  p->tot_ticks = ticks;
+  p->rem_ticks = ticks;
+  p->handler = handler;
+  return 0;
+}

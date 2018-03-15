@@ -105,6 +105,16 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_listproc(void);
 extern int sys_dumplog(void);
+extern int sys_shutdown(void);
+extern int sys_shutdown(void);
+extern int sys_trace(void);
+extern int sys_datetime(void);
+extern int sys_ppoint(void);
+extern int sys_extend_as(void);
+extern int sys_dup2(void);
+extern int sys_yield(void);
+extern int sys_alarm(void);
+
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -130,6 +140,48 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_listproc] sys_listproc,
 [SYS_dumplog]  sys_dumplog,
+[SYS_shutdown] sys_shutdown,
+[SYS_trace]    sys_trace,
+[SYS_datetime] sys_datetime,
+[SYS_ppoint] sys_ppoint,
+[SYS_extend_as] sys_extend_as,
+[SYS_dup2]      sys_dup2,
+[SYS_yield]     sys_yield,
+[SYS_alarm]     sys_alarm,
+};
+
+char* names[]={
+[SYS_fork]    "fork",
+[SYS_exit]    "exit",
+[SYS_wait]    "wait",
+[SYS_pipe]    "pipe",
+[SYS_read]    "read",
+[SYS_kill]    "kill",
+[SYS_exec]    "exec",
+[SYS_fstat]   "fstat",
+[SYS_chdir]   "chdir",
+[SYS_dup]     "dup",
+[SYS_getpid]  "getpid",
+[SYS_sbrk]    "sbrk",
+[SYS_sleep]   "sleep",
+[SYS_uptime]  "uptime",
+[SYS_open]    "open",
+[SYS_write]   "write",
+[SYS_mknod]   "mknod",
+[SYS_unlink]  "unlink",
+[SYS_link]    "link",
+[SYS_mkdir]   "mkdir",
+[SYS_close]   "close",
+[SYS_listproc] "listproc",
+[SYS_dumplog]  "dumplog",
+[SYS_shutdown] "shutdown",
+[SYS_trace]    "trace",
+[SYS_datetime] "datetime",
+[SYS_ppoint] "ppoint",
+[SYS_extend_as] "Extend adress space",
+[SYS_dup2]     "dup2",
+[SYS_yield]    "yield",
+[SYS_alarm]     "alarm",
 };
 
 void
@@ -137,10 +189,15 @@ syscall(void)
 {
   int num;
   struct proc *curproc = myproc();
+  
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
+    if(curproc->trace)
+    {
+      cprintf("syscall (%d) '%s' called by %s(pid: %d) Total : %d \n",num,names[num],curproc->name,curproc->pid,++(curproc->totalcalls));
+    }
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);

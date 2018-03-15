@@ -160,6 +160,7 @@ int             fetchint(uint, int*);
 int             fetchstr(uint, char**);
 int             sys_uptime();
 void            syscall(void);
+int             shutdown(void);
 
 // timer.c
 void            timerinit(void);
@@ -179,6 +180,7 @@ void            uartputc(int);
 void            seginit(void);
 void            kvmalloc(void);
 pde_t*          setupkvm(void);
+pde_t*   walkpgdir(pde_t*, const void*, int);
 char*           uva2ka(pde_t*, char*);
 int             allocuvm(pde_t*, uint, uint);
 int             deallocuvm(pde_t*, uint, uint);

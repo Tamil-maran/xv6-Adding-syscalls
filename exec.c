@@ -4,6 +4,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "defs.h"
+#include "date.h"
 #include "x86.h"
 #include "elf.h"
 
@@ -18,6 +19,7 @@ exec(char *path, char **argv)
   struct proghdr ph;
   pde_t *pgdir, *oldpgdir;
   struct proc *curproc = myproc();
+  struct rtcdate c;
 
   begin_op();
 
@@ -93,13 +95,18 @@ exec(char *path, char **argv)
       last = s+1;
   safestrcpy(curproc->name, last, sizeof(curproc->name));
 
+  //Set start to the current date time
+  cmostime(&c);
+
   // Commit to the user image.
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;
   curproc->sz = sz;
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
+  curproc->start = &c;
   addlogp(curproc);
+  curproc->trace=0;
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;

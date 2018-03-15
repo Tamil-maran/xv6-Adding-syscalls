@@ -1,4 +1,5 @@
 #include "types.h"
+#include "date.h"
 #include "defs.h"
 #include "param.h"
 #include "memlayout.h"
@@ -6,6 +7,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+
 
 struct {
   struct spinlock lock;
@@ -15,6 +17,7 @@ struct {
 struct logp {
   char name[16];
   uint pid;
+  struct rtcdate start;
   int uptime;
   uint dead;
 };
@@ -86,6 +89,8 @@ void addlogp(struct proc *p)
   }
   procno++;
   proclog[procno].pid=p->pid;
+  proclog[procno].start=*(p->start);
+  p->start=&(proclog[procno].start);
   strncpy(proclog[procno].name,p->name,16);
   proclog[procno].uptime=sys_uptime();
   proclog[procno].dead=0;
@@ -94,11 +99,10 @@ void addlogp(struct proc *p)
 
 void updlogp(uint p)
 {
-  cprintf("Updateing for %d\n",p);
   for(int i=0; i<=procno; i++)
   {
-    if(proclog[i].pid==p && proclog[i].dead==0);
-      {
+    if(proclog[i].pid==p && proclog[i].dead==0)
+      { 
         proclog[i].uptime=sys_uptime()-proclog[i].uptime;
         proclog[i].dead=1;
       }
@@ -150,6 +154,9 @@ found:
 
   sp -= sizeof *p->context;
   p->context = (struct context*)sp;
+  p->tot_ticks = 0;
+  p->handler = 0;
+  p->rem_ticks = 0;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
   return p;
@@ -223,6 +230,7 @@ fork(void)
   int i, pid;
   struct proc *np;
   struct proc *curproc = myproc();
+  struct rtcdate c;
 
   // Allocate process.
   if((np = allocproc()) == 0){
@@ -253,7 +261,8 @@ fork(void)
   pid = np->pid;
 
   acquire(&ptable.lock);
-
+  cmostime(&c);
+  np->start = &c;
   np->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -517,6 +526,8 @@ int
 kill(int pid)
 {
   struct proc *p;
+  cprintf("%d killed\n",pid);
+  updlogp(pid);
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -603,9 +614,9 @@ listproc(void)
 
   struct proc *p;
   acquire(&ptable.lock);
-  cprintf(" Pid           Name          Size          State\n\n");
+  cprintf(" Pid           Name          Size          State         Launch Time\n\n");
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-        if(p->state!=UNUSED)
+        if(p->state!=UNUSED && strncmp(p->name,"sh",2))
         {
 
             cprintf(" %d",p->pid);
@@ -618,6 +629,9 @@ listproc(void)
             padd(14,intlen(p->sz));
 
             cprintf("%s",states[p->state]);
+            padd(14,strlen(states[p->state]));
+
+            cprintf("%d:%d:%d",p->start->hour,p->start->minute,p->start->second);
             cprintf("\n");
         }
 
@@ -635,7 +649,7 @@ dumplog(void)
   }
 
 
-  cprintf(" Pid           Name          Time Ran\n\n");
+  cprintf(" Pid           Name          Time Ran      Launch time\n\n");
   for(int i=0; i<=procno; i++ )
   {
     struct logp p=proclog[i];
@@ -647,15 +661,16 @@ dumplog(void)
 
     if(p.dead)
      { 
-        cprintf("%d",p.uptime);
-        padd(14,intlen(p.uptime));
+        cprintf("%d ms",p.uptime);
+        padd(14,intlen(p.uptime)+3);
      }
      else
      {
-        cprintf("Running");
-        padd(14,strlen("Running"));
+        cprintf("Alive");
+        padd(14,strlen("Alive"));
      }
 
+     cprintf("%d:%d:%d",p.start.hour,p.start.minute,p.start.second);
      cprintf("\n");
   }
 }

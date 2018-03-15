@@ -222,5 +222,16 @@ void cmostime(struct rtcdate *r)
   }
 
   *r = t1;
+  r->minute = r->minute +30;
+  if(r->minute>59){
+    r->hour = r->hour+6;
+    r->minute = (r->minute)%60;
+  }
+  else
+    r->hour = r->hour+5;
+  if(r->hour>=24)
+    r->hour = (r->hour)%24;
+
+
   r->year += 2000;
 }

@@ -31,3 +31,11 @@ SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(listproc)
 SYSCALL(dumplog)
+SYSCALL(shutdown)
+SYSCALL(trace)
+SYSCALL(datetime)
+SYSCALL(ppoint)
+SYSCALL(extend_as);
+SYSCALL(dup2);
+SYSCALL(yield);
+SYSCALL(alarm);

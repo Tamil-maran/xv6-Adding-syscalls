@@ -18,6 +18,7 @@
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
+
 static int
 argfd(int n, int *pfd, struct file **pf)
 {
@@ -53,6 +54,29 @@ fdalloc(struct file *f)
 }
 
 int
+sys_dup2(void)
+{
+  struct file *f;
+  int fd2;
+
+  if(argfd(0, 0, &f) < 0)
+    return -1;
+
+  if(argint(1, &fd2) < 0  )
+    return -1;
+
+  struct proc *curproc = myproc();
+  if(curproc->ofile[fd2]==0)
+    curproc->ofile[fd2] = f;
+  else
+    return -1;
+
+  filedup(f);
+  return 0;
+}
+
+
+int
 sys_dup(void)
 {
   struct file *f;
@@ -65,6 +89,7 @@ sys_dup(void)
   filedup(f);
   return fd;
 }
+
 
 int
 sys_read(void)
@@ -101,6 +126,7 @@ sys_close(void)
   myproc()->ofile[fd] = 0;
   fileclose(f);
   return 0;
+
 }
 
 int
@@ -330,6 +356,7 @@ sys_open(void)
   f->off = 0;
   f->readable = !(omode & O_WRONLY);
   f->writable = (omode & O_WRONLY) || (omode & O_RDWR);
+
   return fd;
 }
 
@@ -443,3 +470,4 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+

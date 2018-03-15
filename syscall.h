@@ -22,3 +22,11 @@
 #define SYS_close  21
 #define SYS_listproc 22
 #define SYS_dumplog 23
+#define SYS_shutdown 24
+#define SYS_trace    25
+#define SYS_datetime 26
+#define SYS_ppoint 27
+#define SYS_extend_as 28
+#define SYS_dup2 29
+#define SYS_yield 30
+#define SYS_alarm 31
