@@ -115,6 +115,9 @@ extern int sys_dup2(void);
 extern int sys_yield(void);
 extern int sys_alarm(void);
 extern int sys_printproc(void);
+extern int sys_cpuno(void);
+extern int sys_lockcpu(void);
+extern int sys_unlockcpu(void);
 
 
 static int (*syscalls[])(void) = {
@@ -150,6 +153,9 @@ static int (*syscalls[])(void) = {
 [SYS_yield]     sys_yield,
 [SYS_alarm]     sys_alarm,
 [SYS_printproc] sys_printproc,
+[SYS_cpuno]     sys_cpuno,
+[SYS_lockcpu]   sys_lockcpu,
+[SYS_unlockcpu] sys_unlockcpu,
 };
 
 char* names[]={
@@ -185,6 +191,9 @@ char* names[]={
 [SYS_yield]    "yield",
 [SYS_alarm]     "alarm",
 [SYS_printproc] "printproc",
+[SYS_cpuno]     "cpuno",
+[SYS_lockcpu]   "sys_lockcpu",
+[SYS_unlockcpu] "sys_unlockcpu",
 };
 
 void

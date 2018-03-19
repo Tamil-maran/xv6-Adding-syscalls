@@ -35,6 +35,9 @@ int yield(void);
 int alarm(uint, void (*handler)());
 int gfile(int,int,int);
 int printproc(int);
+int cpuno();
+int lockcpu(int);
+int unlockcpu();
 
 // ulib.c
 int stat(char*, struct stat*);

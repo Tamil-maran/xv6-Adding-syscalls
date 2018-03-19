@@ -40,3 +40,6 @@ SYSCALL(dup2);
 SYSCALL(yield);
 SYSCALL(alarm);
 SYSCALL(printproc);
+SYSCALL(cpuno);
+SYSCALL(lockcpu);
+SYSCALL(unlockcpu);

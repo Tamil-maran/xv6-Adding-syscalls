@@ -56,6 +56,7 @@ struct proc {
   int tot_ticks;
   int rem_ticks;
   void (*handler)();
+  int lockcpu;
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -8,7 +8,7 @@ Syscalls implemented
 - Prints the runtime and launch time of the last 10 processes.
 
 3. trace(int)
-- When 1 is used as argument , any subsequent syscall made by the process is displayed in the console.
+- When 1 is used as argument , any subsequent syscall made by the process is displayed in the  	 console.
 - When 0 is used as argument , the trace output stops.
 
 4. datetime(struct rtcdate*)
@@ -31,3 +31,14 @@ Syscalls implemented
 
 10. printproc(int)
 - Print the process control block contents of a process with given pid.
+
+11. cpuno(void)
+- Returns the currently running cpu
+
+12. lockcpu(int)
+- Locks the calling process to a cpu specified in the argument
+
+13. unlockcpu(void)
+- Unlocks the process from the current cpu
+
+

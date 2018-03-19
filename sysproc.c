@@ -221,3 +221,30 @@ sys_printproc(void)
   cprintf("Trace : %d\n",p->trace);
   return 0;
 }
+
+int sys_cpuno()
+{
+  int no;
+    pushcli();
+    no =  mycpuno();
+    popcli();
+    return no;
+}
+
+int sys_lockcpu()
+{
+  int c;
+  argint(0,&c);
+  if(c>=ncpu)
+    return -1;
+  struct proc *p = myproc();
+  p->lockcpu = c;
+  return 0;
+}
+
+int sys_unlockcpu()
+{
+  struct proc *p = myproc();
+  p->lockcpu = -1;
+  return 0;
+}

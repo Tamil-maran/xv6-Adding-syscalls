@@ -66,6 +66,26 @@ mycpu(void)
   panic("unknown apicid\n");
 }
 
+int
+mycpuno(void)
+{
+  int apicid, i;
+  
+  if(readeflags()&FL_IF)
+    panic("mycpuno called with interrupts enabled\n");
+  
+  apicid = lapicid();
+  // APIC IDs are not guaranteed to be contiguous. Maybe we should have
+  // a reverse map, or reserve a register to store &cpus[i].
+  for (i = 0; i < ncpu; ++i) {
+    if (cpus[i].apicid == apicid)
+      return i;
+  }
+  panic("unknown apicid\n");
+}
+
+
+
 // Disable interrupts so that we are not rescheduled
 // while reading proc from the cpu structure
 struct proc*
@@ -133,6 +153,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->lockcpu = -1;
 
   release(&ptable.lock);
 
@@ -368,7 +389,9 @@ void
 scheduler(void)
 {
   struct proc *p;
+  int cno;
   struct cpu *c = mycpu();
+  cno = mycpuno();
   c->proc = 0;
   
   for(;;){
@@ -381,6 +404,8 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
+      if(p->lockcpu>-1 && p->lockcpu !=cno )
+        continue;
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it

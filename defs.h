@@ -125,6 +125,7 @@ void            addlogp(struct proc*);
 void            updlogp(uint);
 void            dumplog(void);
 struct proc*    getproc(int pid);
+int 			mycpuno();
 
 // swtch.S
 void            swtch(struct context**, struct context*);

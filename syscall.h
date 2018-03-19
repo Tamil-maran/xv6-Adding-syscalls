@@ -31,3 +31,6 @@
 #define SYS_yield 30
 #define SYS_alarm 31
 #define SYS_printproc 32
+#define SYS_cpuno 33
+#define SYS_lockcpu 34
+#define SYS_unlockcpu 35
