@@ -16,7 +16,5 @@ main(void)
 	printf(1,"\nstack\n");
 	int b=5;
 	ppoint(&b);
-	printproc(getpid());
-
 	exit();
 }

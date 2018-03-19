@@ -686,8 +686,8 @@ dumplog(void)
 
     if(p.dead)
      { 
-        cprintf("%d ms",p.uptime);
-        padd(14,intlen(p.uptime)+3);
+        cprintf("%d ms",p.uptime*10);
+        padd(14,intlen(p.uptime*10)+3);
      }
      else
      {

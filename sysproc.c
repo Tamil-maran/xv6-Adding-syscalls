@@ -235,7 +235,7 @@ int sys_lockcpu()
 {
   int c;
   argint(0,&c);
-  if(c>=ncpu)
+  if(c>=ncpu || c<0)
     return -1;
   struct proc *p = myproc();
   p->lockcpu = c;

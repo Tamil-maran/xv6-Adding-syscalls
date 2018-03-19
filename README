@@ -1,44 +1,57 @@
-Syscalls implemented
+Syscalls implemented and sample programs for each
 
 1. lisproc(void)
 - Prints the list of processes in the process table.
 - Prints the time of launch
+	Sample := ps.c
 
 2. dumplog(void)
 - Prints the runtime and launch time of the last 10 processes.
+	Sample := dlog.c
 
 3. trace(int)
 - When 1 is used as argument , any subsequent syscall made by the process is displayed in the  	 console.
 - When 0 is used as argument , the trace output stops.
+	Sample := trace.c
 
 4. datetime(struct rtcdate*)
 - Fills in date and time information on the given rtcdate struct.
+	Sample := date_eg.c
 
 5. ppoint(int*)
 - Displays the physical address of a given virtual address.
+	Sample := ppoint.c
 
 6. extend_as(int)
 - Extends the virtual adresspace to the given new size.
+	Sample := ext.c
 
 7. dup2(int, int)
 - Creates an alias file descriptor for a file that is open.
+	Sample := dup2.c
 
 8. yield(void)
 - Calling process gives up the CPU.
+	Sample := cpuno.c
 
 9. alarm(int, void (*handler)())
 - Executes a handler function in the process periodically depending on the argument provided.
+	Sample := alarm.c
 
 10. printproc(int)
 - Print the process control block contents of a process with given pid.
+	Sample := printproc.c
 
 11. cpuno(void)
-- Returns the currently running cpu
+- Returns the currently running cpu.
+	Sample := cpuno.c
 
 12. lockcpu(int)
-- Locks the calling process to a cpu specified in the argument
+- Locks the calling process to a cpu specified in the argument.
+	Sample := cpuno.c
 
 13. unlockcpu(void)
-- Unlocks the process from the current cpu
+- Unlocks the process from the current cpu.
+	Sample := cpuno.c
 
 
